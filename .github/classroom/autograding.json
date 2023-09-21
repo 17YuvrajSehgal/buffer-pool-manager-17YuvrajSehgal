@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "buffer_test.py",
+      "setup": "sudo -H pip3 install pytest",
+      "run": "pytest buffer_test.py",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": 10
+    }
+  ]
+}
