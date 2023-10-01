@@ -52,7 +52,7 @@ def test_add5():
     pg = buffer_mng.fetchPage(4)
     assert len(buffer_mng.getReplacer().getFreeFrames()) == 0
 
-def test_add5():
+def test_add6():
     buffer_mng = bm.BufferPoolManager(4)
     pg = buffer_mng.fetchPage(0)
     pg = buffer_mng.fetchPage(1)

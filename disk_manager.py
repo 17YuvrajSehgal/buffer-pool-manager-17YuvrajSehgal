@@ -23,9 +23,9 @@ class DiskManager:
         reads the page from disk with id = page_id.
     writePage(page):
         writes a page to disk.
-    deletePage():
+    deletePage(page):
         deletes a page in disk and set the page_id as invalid.
-    createPage():
+    createPage(page_id):
         creates a page in disk.
     """
         

@@ -1,5 +1,8 @@
 # setup_logger.py
 import logging
+
+import page
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -58,7 +61,7 @@ class LRUReplacer(Replacer):
         empty, then return False.
     pin(page_id):
         when a page is pinned, its corresponding frame in the Buffer Pool cannot be evicted until its pin counter 
-        is 0 again. This funcion removes the frame containing the pinned page from the free_frames list in the Replacer
+        is 0 again. This function removes the frame containing the pinned page from the free_frames list in the Replacer
     unpin():
         when the pin_count of a page becomes 0, the frame can be unpined. This method should add the frame 
         containing the unpinned page into the Replacer free_frames list.
@@ -72,23 +75,38 @@ class LRUReplacer(Replacer):
         
     def getFreeFrames(self):
         ##ADD YOUR CODE HERE
-        return
+        return self.free_frames
     
     def pin(self, page_id):
         logging.info(f"Page {page_id} is pinned. It is Removed from the free_frames list")
         ##ADD YOUR CODE HERE
+        if page_id in self.free_frames:
+            self.free_frames.remove(page_id)
+            logger.log("Removed the page from free frames as it was fetched") ###############################
         return
 
     def unpin(self, page_id):
         logging.info(f"Page {page_id} is unpinned. It is added it to the free_frames list")
         ##ADD YOUR CODE HERE
-        return 
+        self.free_frames.append(page_id)
+        return
     
     ## delete from memory and flush to disk
     def victim(self):
         logging.info("Evicting the page that was accessed the least recently. Remove it from the free frames list")
         ##ADD YOUR CODE HERE
-        return
+        """
+        identifies the frame from the free_frames list that was accessed the least recently. if there is such a frame, 
+        then store its contents in the output parameter and return true. if there is no frame to be evicted (free_frames
+        list is empty, then return False.
+        """
+        if len(self.free_frames) == 0:
+            logger.info("No frame to be evicted. The free_frames list is empty.")
+            return False
+        else:
+            least_recently_used_frame = self.free_frames.pop()
+            logger.info(f"Evicted frame: {least_recently_used_frame}")
+            return least_recently_used_frame
         
     def replacerSize(self):
         ##ADD YOUR CODE HERE
