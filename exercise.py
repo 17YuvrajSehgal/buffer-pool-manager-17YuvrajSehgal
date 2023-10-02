@@ -1,6 +1,5 @@
 import buffer_pool_manager as bm
 import buffer_test
-import buffer_pool_manager as bm
 import page
 
 

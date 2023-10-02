@@ -1,8 +1,6 @@
 # setup_logger.py
 import logging
 
-import page
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
