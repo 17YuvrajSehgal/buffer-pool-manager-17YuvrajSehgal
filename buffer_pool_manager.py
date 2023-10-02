@@ -119,30 +119,22 @@ class BufferPoolManager:
                 else:
                     #first get the victim page
                     victim = self.replacer.victim()
-                    #print(self.replacer.getFreeFrames())
-                    #print("trying to remove VVVVVVVVVVVVVVVVVvvictimmmmmmmmmmmmmmmmmmmmmmm is "+ str(victim))
                     if victim in self.page_table:
-
-                        for page in self.buffer_pool:
-                            if page.page_id == victim:
-                                if page.isDirty():
-                                    logger.info(f"Page {page.page_id} was dirty, writing it to the disk first")
-                                    self.disk_manager.writePage(page)
+                        for page_2 in self.buffer_pool:
+                            if page_2.page_id == victim:
+                                if page_2.isDirty():
+                                    logger.info(f"Page {page_2.page_id} was dirty, writing it to the disk first")
+                                    self.disk_manager.writePage(page_2)
                                 # remove it once it has been written to disk, or if it was already not dirty
-                                self.buffer_pool.remove(page)
+                                self.buffer_pool.remove(page_2)
                         self.page_table.remove(victim)
-
-                    pg.incrementPinCount()
                     self.page_table.append(page_id)
                     self.buffer_pool.append(pg)
                     self.replacer.pin(page_id)
                     return pg
 
-                    ##################
-
-            #if buffer pool was already has space then
+            # if buffer pool already has space then
             else:
-                pg.incrementPinCount()
                 self.page_table.append(page_id)
                 self.buffer_pool.append(pg)
                 self.replacer.pin(page_id)
@@ -161,6 +153,7 @@ class BufferPoolManager:
             logger.error(f"Page {page_id} is invalid cannot load page.")
             return False
         else:
+            pg.incrementPinCount()
             return pg
 
     def deletePage(self, page_id):
@@ -175,7 +168,6 @@ class BufferPoolManager:
                         logger.error(f"Cannot delete page {page_id} as it is either dirty or it is pinned")
                         return False
                     else:
-                        logger.info(f"Deleting page {page_id} from bufferpool##################################")
                         self.page_table.remove(page_id)
                         self.buffer_pool.remove(pg)
                         return True
@@ -190,23 +182,35 @@ class BufferPoolManager:
             pg: page.Page
             for pg in self.buffer_pool:
                 if pg.page_id == page_id:
-                    if(pg.getPinCount() > 0):
+                    if pg.getPinCount() > 0:
                         pg.decrementPinCount()
                     pg.dirty = is_dirty
                     if pg.getPinCount() == 0:
                         self.replacer.unpin(page_id)
 
-                    return pg
-        return
-
     def flushPage(self, page_id):
         logger.info(f"Flushing page {page_id} out of the bufferpool")
         # write page to disk and update its metadata
         ##ADD YOUR CODE HERE
+        for pg in self.buffer_pool:
+            if pg.page_id == page_id:
+                pg.dirty = False
+                pg.pin_count = 0
+                self.disk_manager.writePage(pg)
+                self.buffer_pool.remove(pg)
+                self.page_table.remove(page_id)
+                return pg
         return
 
     def flushAllPages(self):
         logger.info(f"Flushing all pages out of the bufferpool")
         # write all pages to disk and update metadata
         ##ADD YOUR CODE HERE
+        for pg in self.buffer_pool:
+            pg.dirty = False
+            pg.pin_count = 0
+            self.disk_manager.writePage(pg)
+
+        self.buffer_pool = []
+        self.page_table = []
         return

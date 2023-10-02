@@ -80,7 +80,6 @@ class LRUReplacer(Replacer):
         ##ADD YOUR CODE HERE
         if page_id in self.free_frames:
             self.free_frames.remove(page_id)
-            logger.info("Removed the page from free frames as it was fetched")#############
         return
 
     def unpin(self, page_id):

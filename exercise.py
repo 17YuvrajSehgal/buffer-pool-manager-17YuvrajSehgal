@@ -112,11 +112,11 @@ def main():
     buffer_mng.deletePage(5)
 
     #21. Print page table
-    print("Page table after deleting 5: " + str(buffer_mng.getPageTable()))
+    print("21. Page table after deleting 5: " + str(buffer_mng.getPageTable()))
 
     #22. Fetch page #5x
     buffer_mng.fetchPage(5)
-    print(buffer_mng.getPageTable())
+    print("22. Page tabel after fetching 5 again: " +str(buffer_mng.getPageTable()))
 
     return
     
