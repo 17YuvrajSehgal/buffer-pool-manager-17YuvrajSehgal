@@ -90,18 +90,34 @@ def main():
     print("15. Page Table: " + str(buffer_mng.getPageTable()))
 
     #16. Unpin page #9 and #12. They are both dirty
+    buffer_mng.unpinPage(9, True)
+    buffer_mng.unpinPage(12, True)
 
     #17. Fetch page #14 from your bufferPool and prints the page_id. What happened with the page that was replaced to make room for page #14?
+    page_14: page.Page = buffer_mng.fetchPage(14)
+    if page_14 is not False:
+        print("17. Id of page 14 is : " + str(page_14.page_id))
+        print("The page with id 9 was removed from the buffer to place the page 14 in its place as it was dirty first "
+              "its content were written in the"
+              "disk and it was also removed from the free frames")
+    else:
+        print("17. Cannot fetch page 14")
 
     #18. Delete page #5. Did it work? Why?
+    buffer_mng.deletePage(5)
 
     #19. Unpin page #5. The page is not dirty
+    buffer_mng.unpinPage(5, False)
 
     #20. Try to delete page #5 again. Did it work?
+    buffer_mng.deletePage(5)
 
     #21. Print page table
+    print("Page table after deleting 5: " + str(buffer_mng.getPageTable()))
 
     #22. Fetch page #5x
+    buffer_mng.fetchPage(5)
+    print(buffer_mng.getPageTable())
 
     return
     

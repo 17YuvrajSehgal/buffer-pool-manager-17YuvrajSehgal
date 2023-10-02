@@ -119,6 +119,19 @@ class BufferPoolManager:
                 else:
                     #first get the victim page
                     victim = self.replacer.victim()
+                    #print(self.replacer.getFreeFrames())
+                    #print("trying to remove VVVVVVVVVVVVVVVVVvvictimmmmmmmmmmmmmmmmmmmmmmm is "+ str(victim))
+                    if victim in self.page_table:
+
+                        for page in self.buffer_pool:
+                            if page.page_id == victim:
+                                if page.isDirty():
+                                    logger.info(f"Page {page.page_id} was dirty, writing it to the disk first")
+                                    self.disk_manager.writePage(page)
+                                # remove it once it has been written to disk, or if it was already not dirty
+                                self.buffer_pool.remove(page)
+                        self.page_table.remove(victim)
+
                     pg.incrementPinCount()
                     self.page_table.append(page_id)
                     self.buffer_pool.append(pg)
@@ -158,14 +171,14 @@ class BufferPoolManager:
         if page_id in self.page_table:
             for pg in self.buffer_pool:
                 if pg.page_id == page_id:
-                    if pg.getPinCount() != 0:
-                        logger.error("Cannot Delete page as it is pinned.")
+                    if pg.getPinCount() != 0 or pg.isDirty():
+                        logger.error(f"Cannot delete page {page_id} as it is either dirty or it is pinned")
                         return False
                     else:
+                        logger.info(f"Deleting page {page_id} from bufferpool##################################")
                         self.page_table.remove(page_id)
                         self.buffer_pool.remove(pg)
                         return True
-
         return False
 
     def unpinPage(self, page_id, is_dirty):

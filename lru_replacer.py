@@ -82,7 +82,7 @@ class LRUReplacer(Replacer):
         ##ADD YOUR CODE HERE
         if page_id in self.free_frames:
             self.free_frames.remove(page_id)
-            logger.log("Removed the page from free frames as it was fetched") ###############################
+            logger.info("Removed the page from free frames as it was fetched")#############
         return
 
     def unpin(self, page_id):
@@ -104,7 +104,7 @@ class LRUReplacer(Replacer):
             logger.info("No frame to be evicted. The free_frames list is empty.")
             return False
         else:
-            least_recently_used_frame = self.free_frames.pop()
+            least_recently_used_frame = self.free_frames.pop(0)
             logger.info(f"Evicted frame: {least_recently_used_frame}")
             return least_recently_used_frame
         

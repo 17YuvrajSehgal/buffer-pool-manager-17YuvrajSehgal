@@ -64,7 +64,7 @@ def test_add6():
     buffer_mng.unpinPage(2, False)
 
     assert len(buffer_mng.getReplacer().getFreeFrames()) == 3
-    assert buffer_mng.getReplacer().victim() == 2
+    assert buffer_mng.getReplacer().victim() == 1
 
 def test_pin():
     buffer_mng = bm.BufferPoolManager(4)
